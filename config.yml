@@ -11,7 +11,7 @@ tech:
   leafshears:
     type: LEAFSHEARS
     clear_cube_size: 3
-    cannot_bypass_message: "&cSome of leaves are reinforced and therefore cannot be broken. Please use another tool to break it."
+    cannot_bypass_message: "&cSome of the nearby leaves are reinforced and can't be broken"
     durability_loss_chance: 0.1
     tag:
       type: LORE
@@ -30,34 +30,34 @@ anvil:
   materialCosts:
     diamondPick:
       material: DIAMOND_PICKAXE
-      value: 15
+      value: 6
     diamondSword:
       material: DIAMOND_SWORD
-      value: 10
+      value: 12
     diamondShovel:
       material: DIAMOND_SPADE
-      value: 5
+      value: 6
     diamondAxe:
       material: DIAMOND_AXE
-      value: 15
+      value: 6
     diamondHoe:
       material: DIAMOND_HOE
-      value: 10
+      value: 6
     diamondHelmet:
       material: DIAMOND_HELMET
-      value: 25
+      value: 18
     diamondChest:
       material: DIAMOND_CHESTPLATE
-      value: 40
+      value: 18
     diamondLeggings:
       material: DIAMOND_LEGGINGS
-      value: 35
+      value: 18
     diamondBoots:
       material: DIAMOND_BOOTS
-      value: 20
+      value: 18
     ironPick:
       material: IRON_PICKAXE
-      value: 6
+      value: 2
     ironSword:
       material: IRON_SWORD
       value: 4
@@ -66,22 +66,103 @@ anvil:
       value: 2
     ironAxe:
       material: IRON_AXE
-      value: 6
+      value: 2
     ironHoe:
       material: IRON_HOE
-      value: 4
+      value: 2
     ironHelmet:
       material: IRON_HELMET
-      value: 10
+      value: 6
     ironChest:
       material: IRON_CHESTPLATE
-      value: 16
+      value: 6
     ironLeggings:
       material: IRON_LEGGINGS
-      value: 14
+      value: 6
     ironBoots:
       material: IRON_BOOTS
-      value: 8
+      value: 6
+    leatherHelmet:
+      material: LEATHER_HELMET
+      value: 1
+    leatherChest:
+      material: LEATHER_CHESTPLATE
+      value: 1
+    leatherLeggings:
+      material: LEATHER_LEGGINGS
+      value: 1
+    leatherBoots:
+      material: LEATHER_BOOTS
+      value: 1
+    stonePick:
+      material: STONE_PICKAXE
+      value: 1
+    stoneSword:
+      material: STONE_SWORD
+      value: 1
+    stoneShovel:
+      material: STONE_SPADE
+      value: 1
+    stoneAxe:
+      material: STONE_AXE
+      value: 1
+    stoneHoe:
+      material: STONE_HOE
+      value: 1
+    goldPick:
+      material: GOLD_PICKAXE
+      value: 1
+    goldSword:
+      material: GOLD_SWORD
+      value: 1
+    goldShovel:
+      material: GOLD_SPADE
+      value: 1
+    goldAxe:
+      material: GOLD_AXE
+      value: 1
+    goldHoe:
+      material: GOLD_HOE
+      value: 1
+    goldHelmet:
+      material: GOLD_HELMET
+      value: 1
+    goldChest:
+      material: GOLD_CHESTPLATE
+      value: 1
+    goldLeggings:
+      material: GOLD_LEGGINGS
+      value: 1
+    goldBoots:
+      material: GOLD_BOOTS
+      value: 1
+    chainmailHelmet:
+      material: CHAINMAIL_HELMET
+      value: 2
+    chainmailChest:
+      material: CHAINMAIL_CHESTPLATE
+      value: 2
+    chainmailLeggings:
+      material: CHAINMAIL_LEGGINGS
+      value: 2
+    chainmailBoots:
+      material: CHAINMAIL_BOOTS
+      value: 2
+    shears:
+      material: SHEARS
+      value: 2
+    shield:
+      material: SHIELD
+      value: 2
+    bow:
+      material: BOW
+      value: 1
+    flintNSteel:
+      material: FLINT_AND_STEEL
+      value: 1
+    rod:
+      material: FISHING_ROD
+      value: 1
   enchantCosts:
         fireprot:
           enchant: PROTECTION_FIRE
@@ -149,6 +230,22 @@ anvil:
         unbreaking:
           enchant: DURABILITY
           value: 3
+        #Disabled enchants from here onwards
+        mending:
+          enchant: MENDING
+          value: 9999999
+        lure:
+          enchant: LURE
+          value: 9999999
+        luckOfTheSea:
+          enchant: LUCK
+          value: 9999999
+        looting:
+          enchant: LOOT_BONUS_MOBS
+          value: 9999999
+        fortune:
+          enchant: LOOT_BONUS_BLOCKS
+          value: 9999999
   renamingCost: 2.0
   scaleWithMissingDura: true
   blacklistedLore:
