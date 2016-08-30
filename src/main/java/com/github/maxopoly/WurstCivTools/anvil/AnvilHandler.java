@@ -275,6 +275,11 @@ public class AnvilHandler {
 		tools.add(Material.GOLD_PICKAXE);
 		tools.add(Material.GOLD_SPADE);
 		tools.add(Material.GOLD_SWORD);
+		tools.add(Material.STONE_AXE);
+		tools.add(Material.STONE_PICKAXE);
+		tools.add(Material.STONE_SWORD);
+		tools.add(Material.STONE_SPADE);
+		tools.add(Material.STONE_HOE);
 		tools.add(Material.DIAMOND_AXE);
 		tools.add(Material.DIAMOND_HOE);
 		tools.add(Material.DIAMOND_PICKAXE);
