@@ -9,6 +9,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -120,6 +121,8 @@ public class LeafShears extends WurstEffect {
 					}
 					
 					block.setType(Material.AIR);
+					
+					player.spigot().playEffect(block.getLocation(), Effect.SMOKE, 0, 0, 0.0f, 0.0f, 0.0f, 2.0f, 3, 32);
 				}
 			}
 		}

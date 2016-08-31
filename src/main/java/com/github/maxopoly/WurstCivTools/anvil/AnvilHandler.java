@@ -21,18 +21,20 @@ public class AnvilHandler {
 
 	private Map<ItemMap, Double> values;
 	private Map<Enchantment, Double> enchantCosts;
+	private Map<String, Double> loreCosts;
 	private static Set<Material> tools;
 	private boolean scaleWithMissingDurability;
 	private List<String> blacklistedLore;
 	Map<Material, Double> materialValues;
 
-	public AnvilHandler(Map<ItemMap, Double> values, Map<Enchantment, Double> enchantCosts,
+	public AnvilHandler(Map<ItemMap, Double> values, Map<Enchantment, Double> enchantCosts, Map<String, Double> loreCosts,
 			Map<Material, Double> materialValues, boolean scaleWithMissingDura, List<String> blacklistedLore) {
 		this.values = values;
 		this.enchantCosts = enchantCosts;
 		this.scaleWithMissingDurability = scaleWithMissingDura;
 		this.blacklistedLore = blacklistedLore;
 		this.materialValues = materialValues;
+		this.loreCosts = loreCosts;
 		initRepairableSet();
 	}
 
@@ -77,12 +79,21 @@ public class AnvilHandler {
 				}
 			}
 		}
+		double loreMultiplier = 0;
+		if (im.hasLore()) {
+			for(String lore : im.getLore()) {
+				Double d = loreCosts.get(lore);
+				if (d != null) {
+					loreMultiplier += d;
+				}
+			}
+		}
 		double materialAddition = 0.0;
 		Double retrieveMatAddition = materialValues.get(is.getType());
 		if (retrieveMatAddition != null) {
 			materialAddition = retrieveMatAddition;
 		}
-		return (enchantMultiplier + materialAddition) * duraMultiplier;
+		return (enchantMultiplier + materialAddition + loreMultiplier) * duraMultiplier;
 	}
 
 	/**

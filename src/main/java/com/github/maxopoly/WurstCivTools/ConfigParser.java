@@ -191,6 +191,24 @@ public class ConfigParser {
 			double value = current.getDouble("value", 1.0);
 			enchantCosts.put(enchant, value);
 		}
+		ConfigurationSection loreSection = config.getConfigurationSection("loreCosts");
+		Map <String, Double> loreCosts = new HashMap<String, Double>();
+		if (loreSection != null) {
+			for(String key : loreSection.getKeys(false)) {
+				ConfigurationSection current = loreSection.getConfigurationSection(key);
+				if (current == null) {
+					plugin.warning("Found invalid value " + key + " in anvil lore value section");
+					continue;
+				}
+				String lore = current.getString("lore");
+				if (lore == null) {
+					plugin.warning("No lore specified for custom lore weight at " + current.getCurrentPath() + ". Skipping it");
+					continue;
+				}
+				double value = current.getDouble("value", 1.0);
+				loreCosts.put(lore, value);
+			}
+		}
 		ConfigurationSection matCostSection = config.getConfigurationSection("materialCosts");
 		Map <Material, Double> matCosts = new HashMap<Material, Double>();
 		if (matCostSection != null) {
@@ -219,7 +237,7 @@ public class ConfigParser {
 		}
 		List <String> blacklisted = config.getStringList("blacklistedLore");
 		boolean scaleWithMissingDura = config.getBoolean("scaleWithMissingDura", true);
-		anvilHandler = new AnvilHandler(repairValues, enchantCosts, matCosts, scaleWithMissingDura, blacklisted);
+		anvilHandler = new AnvilHandler(repairValues, enchantCosts, loreCosts, matCosts, scaleWithMissingDura, blacklisted);
 	}
 	
 	public AnvilHandler getAnvilHandler() {

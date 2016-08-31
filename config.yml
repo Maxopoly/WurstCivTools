@@ -12,10 +12,19 @@ tech:
     type: LEAFSHEARS
     clear_cube_size: 3
     cannot_bypass_message: "&cSome of the nearby leaves are reinforced and can't be broken"
-    durability_loss_chance: 0.1
+    durability_loss_chance: 1.0
     tag:
       type: LORE
-      lore: Leaf Shears
+      lore: Leaf Burner
+      material: SHEARS
+  leafshears2:
+    type: LEAFSHEARS
+    clear_cube_size: 5
+    cannot_bypass_message: "&cSome of the nearby leaves are reinforced and can't be broken"
+    durability_loss_chance: 1.0
+    tag:
+      type: LORE
+      lore: Leaf Burner II
       material: SHEARS
 anvil:
   repairMaterials:
@@ -163,6 +172,13 @@ anvil:
     rod:
       material: FISHING_ROD
       value: 1
+  loreCosts:
+    leafshears1:
+      lore: Leaf Burner
+      value: 1
+    leafshears2:
+      lore: Leaf Burner II
+      value: 2
   enchantCosts:
         fireprot:
           enchant: PROTECTION_FIRE
@@ -199,7 +215,7 @@ anvil:
           value: 12
         protection:
           enchant: PROTECTION_ENVIRONMENTAL
-          value: 3
+          value: 4
         blastprotection:
           enchant: PROTECTION_EXPLOSIONS
           value: 1
@@ -226,10 +242,10 @@ anvil:
           value: 7
         efficiency:
           enchant: DIG_SPEED
-          value: 1
+          value: 2
         unbreaking:
           enchant: DURABILITY
-          value: 3
+          value: 4
         #Disabled enchants from here onwards
         mending:
           enchant: MENDING
