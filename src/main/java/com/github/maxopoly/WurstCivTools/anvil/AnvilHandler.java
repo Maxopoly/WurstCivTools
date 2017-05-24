@@ -151,6 +151,11 @@ public class AnvilHandler {
 			i.setItem(0, null);
 			return true;
 		}
+		if (getValue(i.getItem(1), true) == 0) {
+			//dont consume worthless items, in this case no repair will be done either
+			i.setItem(0, null);
+			return true;
+		}
 		if (i.getItem(1).getType() == Material.ENCHANTED_BOOK) {
 			i.setItem(0, null);
 			i.setItem(1, null);
