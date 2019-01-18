@@ -10,6 +10,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 import com.github.maxopoly.WurstCivTools.anvil.AnvilHandler;
 import com.github.maxopoly.WurstCivTools.listener.AnvilListener;
 import com.github.maxopoly.WurstCivTools.listener.ToolListener;
+import com.github.maxopoly.WurstCivTools.misc.NMSLoadHelper;
 import com.github.maxopoly.WurstCivTools.nms.INmsManager;
 import com.github.maxopoly.WurstCivTools.tags.Tag;
 
@@ -30,10 +31,11 @@ public class WurstCivTools extends ACivMod {
 	
 	public void onEnable() {
 		instance = this;
+		NMSLoadHelper.init(Bukkit.getServer(), "com.github.maxopoly.WurstCivTools.nms.%s.NmsManager");
 		ConfigParser cp = new ConfigParser();
 		manager = cp.parse();
 		anvilHandler = cp.getAnvilHandler();
-		nmsManager = new com.github.maxopoly.WurstCivTools.nms.v1_10_R1.NmsManager();
+		nmsManager = new com.github.maxopoly.WurstCivTools.nms.v1_12_R1.NmsManager();
 		registerListeners();
 	}
 	

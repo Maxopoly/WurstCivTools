@@ -39,8 +39,9 @@ public class PlayerHook extends WurstEffect {
 	
 	@Override 
 	public void handleItemSelect(Player p, PlayerItemHeldEvent e){
-		if (canSelect(p) == false)
+		if (canSelect(p) == false) {
 			e.setCancelled(true);
+		}
 	}
 
 	@Override
@@ -50,8 +51,9 @@ public class PlayerHook extends WurstEffect {
 	
 	@Override
 	public void handleSwapToMainHand(Player p, PlayerSwapHandItemsEvent e) {
-		if (canSelect(p) == false)
+		if (canSelect(p) == false) {
 			e.setCancelled(true);
+		}
 	}
 
 	@Override

@@ -1,10 +1,10 @@
-package com.github.maxopoly.WurstCivTools.nms.v1_10_R1;
+package com.github.maxopoly.WurstCivTools.nms.v1_12_R1;
 
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.ItemStack;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.ItemStack;
 
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import com.github.maxopoly.WurstCivTools.misc.ReflectionHelper;
@@ -17,6 +17,6 @@ public class NmsManager implements INmsManager {
 		
 		nmsItem.damage(damage, nmsPlayer);
 		
-		return nmsItem.count == 0;
+		return nmsItem.getData() == 0;
 	}
 }

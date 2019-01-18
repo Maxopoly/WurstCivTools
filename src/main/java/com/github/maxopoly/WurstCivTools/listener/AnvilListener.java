@@ -33,45 +33,39 @@ public class AnvilListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void anvilResultSlotClick(InventoryClickEvent e) {
-		if (e.getInventory() != null
-				&& e.getInventory().getType() == InventoryType.ANVIL
-				&& e.getRawSlot() == 2) {
+		if (e.getInventory() != null && e.getInventory().getType() == InventoryType.ANVIL && e.getRawSlot() == 2) {
 			e.setCancelled(true);
 			if (e.getInventory().getItem(2) == null) {
 				return;
 			}
 			if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
-				e.getWhoClicked().sendMessage(ChatColor.RED + "Remove the item from your cursor first so it's not overwritten");
+				e.getWhoClicked()
+						.sendMessage(ChatColor.RED + "Remove the item from your cursor first so it's not overwritten");
 				return;
 			}
 			// result slot in anvil was clicked
 			ItemStack result = e.getInventory().getItem(2).clone();
-			if (handler.consumeRequiredMaterials((AnvilInventory) e
-					.getInventory())) {
+			if (handler.consumeRequiredMaterials((AnvilInventory) e.getInventory())) {
 				e.setCursor(result);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(
-						WurstCivTools.getPlugin(), new Runnable() {
-								@Override
-							public void run() {
-								for (HumanEntity h : e.getViewers()) {
-									((Player) h).updateInventory();
-								}
-							}
+				Bukkit.getScheduler().scheduleSyncDelayedTask(WurstCivTools.getPlugin(), new Runnable() {
+					@Override
+					public void run() {
+						for (HumanEntity h : e.getViewers()) {
+							((Player) h).updateInventory();
 						}
-				);
+					}
+				});
 			}
 		}
 	}
 
 	@EventHandler
 	public void anvilPrepare(PrepareAnvilEvent e) {
-		ItemStack res = handler.getAdjustedOutput(e.getInventory(),
-				e.getResult());
+		ItemStack res = handler.getAdjustedOutput(e.getInventory(), e.getResult());
 		if (res != null) {
 			e.setResult(res);
 		}
-		int cost = (int) Math.ceil(handler.getTotalAnvilActionCost(e
-				.getInventory()));
+		int cost = (int) Math.ceil(handler.getTotalAnvilActionCost(e.getInventory()));
 		if (cost != 0) {
 			for (HumanEntity h : e.getInventory().getViewers()) {
 				if (!cdHandler.onCoolDown(h.getUniqueId())) {
@@ -80,17 +74,16 @@ public class AnvilListener implements Listener {
 				}
 			}
 		}
-		Bukkit.getScheduler().scheduleSyncDelayedTask(
-				WurstCivTools.getPlugin(), new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(WurstCivTools.getPlugin(), new Runnable() {
 
-					@Override
-					public void run() {
-						for (HumanEntity h : e.getViewers()) {
-							((Player) h).updateInventory();
-						}
+			@Override
+			public void run() {
+				for (HumanEntity h : e.getViewers()) {
+					((Player) h).updateInventory();
+				}
 
-					}
-				});
+			}
+		});
 	}
 
 }
