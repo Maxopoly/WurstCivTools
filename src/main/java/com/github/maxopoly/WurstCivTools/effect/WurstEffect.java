@@ -1,28 +1,29 @@
 package com.github.maxopoly.WurstCivTools.effect;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.ItemStack;
+
+import com.github.maxopoly.WurstCivTools.WurstCivTools;
 
 public abstract class WurstEffect {
 	
 	protected Random rng = new Random();
-
-	public Listener getListener() {
-		return null;
-	}
+	protected Logger logger = WurstCivTools.getPlugin().getLogger();
 
 	public void handleBreak(Player p, BlockBreakEvent e) {
 
@@ -30,6 +31,14 @@ public abstract class WurstEffect {
 
 	public void handleInteract(Player p, PlayerInteractEvent e) {
 
+	}
+	
+	public void handleInteractOffhand(Player p, PlayerInteractEvent e) {
+
+	}
+	
+	public void handleClickOnItem(ItemStack cursor, ItemStack clickedOn, Player player, InventoryClickEvent e) {
+		
 	}
 
 	public void handleItemSelect(Player p, PlayerItemHeldEvent e) {
@@ -55,6 +64,10 @@ public abstract class WurstEffect {
 	}
 
 	public void handleDamagePlayerForHeldItem(Player attacker, Player victim, EntityDamageByEntityEvent e) {
+
+	}
+	
+	public void handleDamageNPCForHeldItem(Player attacker, Entity victim, EntityDamageByEntityEvent e) {
 
 	}
 
@@ -90,5 +103,9 @@ public abstract class WurstEffect {
 	public void handleDamageReceivedPlayerForEquippedItem(Player attacker, Player victim, EntityDamageByEntityEvent e) {
 
 	}
+	
+	public abstract boolean parseParameter(ConfigurationSection config);
+	
+	public abstract String getIdentifier();
 
 }

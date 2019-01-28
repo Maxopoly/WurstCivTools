@@ -1,128 +1,195 @@
 package com.github.maxopoly.WurstCivTools;
 
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMapDirectly;
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.maxopoly.WurstCivTools.anvil.AnvilHandler;
-import com.github.maxopoly.WurstCivTools.effect.LeafShears;
-import com.github.maxopoly.WurstCivTools.effect.PlayerHook;
+import com.github.maxopoly.WurstCivTools.effect.AbstractEnchantmentEffect;
 import com.github.maxopoly.WurstCivTools.effect.WurstEffect;
-import com.github.maxopoly.WurstCivTools.tags.LoreTag;
+import com.github.maxopoly.WurstCivTools.enchantment.CustomEnchantManager;
+import com.github.maxopoly.WurstCivTools.enchantment.CustomEnchantment;
+import com.github.maxopoly.WurstCivTools.enchantment.EnchantableType;
+import com.github.maxopoly.WurstCivTools.enchantment.EnchantableTypeManager;
+import com.github.maxopoly.WurstCivTools.tags.EnchantmentLoreTag;
 import com.github.maxopoly.WurstCivTools.tags.Tag;
+
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class ConfigParser {
 	private WurstCivTools plugin;
-	private WurstManager manager;
+	private TagManager manager;
 	private AnvilHandler anvilHandler;
 
 	public ConfigParser() {
 		plugin = WurstCivTools.getPlugin();
 	}
 
-	public WurstManager parse() {
+	public TagManager parse() {
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();
 		FileConfiguration config = plugin.getConfig();
-		manager = new WurstManager();
-		parseTools(config.getConfigurationSection("tech"));
+		EnchantableTypeManager typeMan = parseEnchantableTypes(config.getConfigurationSection("enchantableTypes"));
+		CustomEnchantManager enchantMan = parseEnchantments(config.getConfigurationSection("enchants"), typeMan);
+		manager = parseEffects(enchantMan, config.getConfigurationSection("effects"));
 		parseCustomAnvilFunctionality(config.getConfigurationSection("anvil"));
 		plugin.info("Parsed complete config");
 		return manager;
 	}
 
-	public void parseTools(ConfigurationSection config) {
+	public TagManager parseEffects(CustomEnchantManager enchantMan, ConfigurationSection config) {
+		TagManager manager = new TagManager();
+		if (config == null) {
+			plugin.warning("No effect section found");
+			return manager;
+		}
+		if (enchantMan == null) {
+			plugin.warning("Could not parse any effects, because no enchants were specified");
+			return manager;
+		}
+		EffectTypeManager effectTypeMan = new EffectTypeManager();
 		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				plugin.warning("Skipped missplaced entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
 			ConfigurationSection current = config.getConfigurationSection(key);
-			String type = current.getString("type");
-			Tag tag = parseTag(current.getConfigurationSection("tag"));
-			if (tag == null) {
-				plugin.severe("Could not parse tag for effect at " + config.getCurrentPath());
+			if (!current.isString("type")) {
+				plugin.warning("Skipping effect entry " + current.getCurrentPath() + ", because no type was specified");
 				continue;
 			}
-			if (current.getBoolean("enabled", true) == false) {
-				plugin.info("Effect " + key + " disabled, skipping...");
-				continue;
-			}
-			WurstEffect effect;
-			switch (type) {
-			case "LEAFSHEARS":
-				if (!Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
-					plugin.severe("Attempted to load LeafShears tool, but Citadel is not installed on this server");
-					continue;
-				}
-				int clearCubeSize = current.getInt("clear_cube_size", 3);
-				String cannotBypassMessage = current.getString("cannot_bypass_message", "");
-				double durabilityLossChance = current.getDouble("durability_loss_chance", 0);
-				effect = new LeafShears(clearCubeSize, cannotBypassMessage, durabilityLossChance);
-				plugin.info("Parsed LeafShears tool, clearCubeSize:" + clearCubeSize + ", cannotBypassmessage: \""
-						+ cannotBypassMessage + "\"" + ", durabilityLossChance: " + durabilityLossChance);
-				break;
-			case "PLAYERHOOK":
-				boolean prevent_swords = current.getBoolean("prevent_use_with_swords", false);
-				boolean prevent_axes = current.getBoolean("prevent_use_with_axes", false);
-				boolean prevent_bows = current.getBoolean("prevent_use_with_bows", false);
-				int stop_count = current.getInt("hooks_to_stop_movement", 2);
-				if (stop_count <= 0) {
-					stop_count = 2;
-				}
-				double speed_change = current.getDouble("hook_speed_change", -0.05D);
-				effect = new PlayerHook(prevent_swords, prevent_axes, prevent_bows, stop_count, speed_change);
-				plugin.info("Parsed PlayerHook tool, swords:" + prevent_swords + ", axes:" + prevent_axes + ", bows:"
-						+ prevent_bows + ", stop_count:" + stop_count + ", speed_change:" + speed_change);
-				break;
-			default:
-				plugin.severe("Could not identify effect type " + type + " at " + config.getCurrentPath());
-				effect = null;
-
-			}
+			String typeString = current.getString("type");
+			WurstEffect effect = effectTypeMan.getNewEffectInstance(typeString);
 			if (effect == null) {
-				plugin.severe("Could not load effect from config at " + config.getCurrentPath());
+				plugin.warning("Skipping effect entry " + current.getCurrentPath() + ", its effect type was not known");
 				continue;
 			}
+			if (!current.isString("enchant")) {
+				plugin.warning(
+						"Skipping effect entry " + current.getCurrentPath() + ", because no enchant was specified");
+				continue;
+			}
+			String enchantString = current.getString("enchant");
+			CustomEnchantment enchant = enchantMan.getEnchantment(enchantString);
+			if (enchant == null) {
+				plugin.warning("Skipping effect entry " + current.getCurrentPath() + ", because enchant with name "
+						+ enchantString + " did not exist");
+				continue;
+			}
+			((AbstractEnchantmentEffect) effect).setEnchant(enchant);
+			ConfigurationSection parameterSection;
+			if (!current.isConfigurationSection("parameter")) {
+				// just an empty one
+				current.createSection("parameter");
+			}
+			parameterSection = current.getConfigurationSection("parameter");
+			effect.parseParameter(parameterSection);
+			Tag tag = new EnchantmentLoreTag(enchant);
 			tag.setEffect(effect);
 			manager.addTag(tag);
 		}
+		return manager;
 	}
 
-	public Tag parseTag(ConfigurationSection config) {
+	public CustomEnchantManager parseEnchantments(ConfigurationSection config, EnchantableTypeManager typeManager) {
+		CustomEnchantManager man = new CustomEnchantManager();
 		if (config == null) {
-			return null;
+			plugin.warning("No enchantment section found");
+			return man;
 		}
-		Tag result;
-		String type = config.getString("type");
-		if (type == null) {
-			plugin.severe("No type specified for tag at" + config.getCurrentPath());
-			return null;
+		if (typeManager == null) {
+			plugin.warning("Could not parse any enchantments, because no enchantable types were specified");
+			return man;
 		}
-		String matString = config.getString("material");
-		if (matString == null) {
-			plugin.severe("No material specified for tag at" + config.getCurrentPath());
-			return null;
+		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				plugin.warning("Skipped missplaced entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
+			ConfigurationSection current = config.getConfigurationSection(key);
+			if (!current.isString("id")) {
+				plugin.warning("Skipping enchantment entry " + current.getCurrentPath() + " due to a lack of an id");
+				continue;
+			}
+			String id = current.getString("id");
+			if (!current.isString("name")) {
+				plugin.warning("Skipping enchantment entry " + current.getCurrentPath() + " due to a lack of a name");
+				continue;
+			}
+			String name = current.getString("name");
+			int maxLevel = current.getInt("maxLevel", 1);
+			if (!current.isList("allowedTypes")) {
+				plugin.warning("Skipping enchantment entry " + current.getCurrentPath()
+						+ ", because it has no applicable types");
+				continue;
+			}
+			List<String> typeList = current.getStringList("allowedTypes");
+			List<EnchantableType> parsedTypes = new LinkedList<>();
+			for (String entry : typeList) {
+				try {
+					EnchantableType type = typeManager.getEnchantment(entry);
+					parsedTypes.add(type);
+				} catch (IllegalArgumentException e) {
+					plugin.warning("Could not parse material " + entry + " at " + current.getCurrentPath());
+					continue;
+				}
+			}
+			Enchantment vanillaEquivalent = null;
+			if (current.isString("vanilla")) {
+				vanillaEquivalent = Enchantment.getByName(current.getString("vanilla").toUpperCase().trim());
+			}
+			CustomEnchantment enchant = new CustomEnchantment(id, name, maxLevel, parsedTypes, vanillaEquivalent);
+			man.registerEnchantment(enchant);
 		}
-		Material mat = Material.matchMaterial(matString);
-		switch (type.toLowerCase()) {
-		case "lore":
-			String lore = config.getString("lore");
-			result = new LoreTag(mat, lore);
-			break;
-		default:
-			plugin.severe("Could not parse tag type " + type);
-			result = null;
-			break;
+		return man;
+	}
+
+	public EnchantableTypeManager parseEnchantableTypes(ConfigurationSection config) {
+		EnchantableTypeManager man = new EnchantableTypeManager();
+		if (config == null) {
+			plugin.warning("No enchantable type section found");
+			return man;
 		}
-		return result;
+		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				plugin.warning("Skipped missplaced entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
+			ConfigurationSection current = config.getConfigurationSection(key);
+			if (!current.isString("id")) {
+				plugin.warning(
+						"Skipping enchantable type entry " + current.getCurrentPath() + " due to a lack of an id");
+				continue;
+			}
+			String id = current.getString("id");
+			if (!current.isList("materials")) {
+				plugin.warning("Skipping enchantable type entry " + current.getCurrentPath()
+						+ ", because no materials were specified");
+				continue;
+			}
+			List<String> matStringList = current.getStringList("materials");
+			List<Material> parsedMats = new LinkedList<>();
+			for (String entry : matStringList) {
+				try {
+					Material mat = Material.valueOf(entry.toUpperCase().trim());
+					parsedMats.add(mat);
+				} catch (IllegalArgumentException e) {
+					plugin.warning("Could not parse material " + entry + " at " + current.getCurrentPath());
+					continue;
+				}
+			}
+			EnchantableType type = new EnchantableType(id, parsedMats);
+			man.registerType(type);
+		}
+		return man;
 	}
 
 	public void parseCustomAnvilFunctionality(ConfigurationSection config) {

@@ -11,17 +11,19 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.maxopoly.WurstCivTools.TagManager;
 import com.github.maxopoly.WurstCivTools.WurstCivTools;
-import com.github.maxopoly.WurstCivTools.WurstManager;
 import com.github.maxopoly.WurstCivTools.tags.Tag;
 
 public class ToolListener implements Listener {
-	private WurstManager manager;
+	private TagManager manager;
 
 	public ToolListener() {
 		this.manager = WurstCivTools.getManager();
@@ -45,6 +47,7 @@ public class ToolListener implements Listener {
 			return;
 		}
 		if (e.getDamager().getType() != EntityType.PLAYER) {
+			// TOD events for getting attacked by mobs
 			return;
 		}
 		Player p = (Player) e.getDamager();
@@ -60,7 +63,9 @@ public class ToolListener implements Listener {
 				}
 			}
 		} else {
-			// TODO events for fighting mobs?
+			for (Tag tag : manager.getTagsFor(is)) {
+				tag.getEffect().handleDamageNPCForHeldItem(p, e.getEntity(), e);
+			}
 		}
 	}
 
@@ -81,6 +86,21 @@ public class ToolListener implements Listener {
 	public void interact(PlayerInteractEvent e) {
 		for (Tag tag : manager.getTagsFor(e.getItem())) {
 			tag.getEffect().handleInteract(e.getPlayer(), e);
+		}
+		ItemStack offHand = e.getPlayer().getInventory().getItemInOffHand();
+		for (Tag tag : manager.getTagsFor(offHand)) {
+			tag.getEffect().handleInteractOffhand(e.getPlayer(), e);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void invClick(InventoryClickEvent e) {
+		if (e.getClick() == ClickType.LEFT || e.getClick() == ClickType.RIGHT) {
+			if (e.getCurrentItem() != null && e.getCursor() != null) {
+				for (Tag tag : manager.getTagsFor(e.getCursor())) {
+					tag.getEffect().handleClickOnItem(e.getCursor(), e.getCurrentItem(), (Player) e.getWhoClicked(), e);
+				}
+			}
 		}
 	}
 

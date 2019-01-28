@@ -15,11 +15,11 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
-import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
-
 import com.github.maxopoly.WurstCivTools.WurstCivTools;
 import com.github.maxopoly.WurstCivTools.anvil.AnvilHandler;
+
+import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
+import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
 
 public class AnvilListener implements Listener {
 

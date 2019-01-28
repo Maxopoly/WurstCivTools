@@ -7,7 +7,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -21,7 +20,7 @@ public abstract class AbstractArrowTagEffect extends AbstractEnchantmentEffect {
 	public void handleProjectileShot(Player p, ProjectileLaunchEvent e) {
 		if (e.getEntity().getType() == EntityType.ARROW) {
 			Arrow arrow = (Arrow) e.getEntity();
-			arrow.setMetadata(getEnchant().getName(), new FixedMetadataValue(WurstCivTools.getPlugin(),
+			arrow.setMetadata(getEnchant().getIdentifier(), new FixedMetadataValue(WurstCivTools.getPlugin(),
 					getEnchantLevel(p.getInventory().getItemInMainHand())));
 		}
 	}
@@ -45,7 +44,7 @@ public abstract class AbstractArrowTagEffect extends AbstractEnchantmentEffect {
 	}
 	
 	protected int getEnchantLevelFromArrow(Arrow arrow, CustomEnchantment enchant) {
-		List<MetadataValue> values = arrow.getMetadata(enchant.getName());
+		List<MetadataValue> values = arrow.getMetadata(enchant.getIdentifier());
 		if (values == null || values.size() == 0) {
 			return -1;
 		}

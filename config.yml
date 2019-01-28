@@ -26,6 +26,30 @@ tech:
       type: LORE
       lore: Leaf Burner II
       material: SHEARS
+  testEnchant:
+    type: ENCHANT
+    enchant: FARSHOT
+    effect: FARSHOT
+
+effects:
+  type: FARSHOT
+  enchant: FARSHOT
+  key1: value1
+
+enchantableTypes:
+  sword:
+    id: SWORD
+    materials:
+     - DIAMOND_SWORD
+     - IRON_SWORD
+enchants:
+  soulTaker:
+    name: Soul Taker
+    id: SOUL_TAKER
+    maxLevel: 3
+    allowedTypes:
+     - SWORD
+     
 anvil:
   repairMaterials:
     emerald:

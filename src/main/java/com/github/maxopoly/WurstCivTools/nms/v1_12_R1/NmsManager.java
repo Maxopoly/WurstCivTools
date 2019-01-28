@@ -1,14 +1,14 @@
 package com.github.maxopoly.WurstCivTools.nms.v1_12_R1;
 
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.ItemStack;
-
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 import com.github.maxopoly.WurstCivTools.misc.ReflectionHelper;
 import com.github.maxopoly.WurstCivTools.nms.INmsManager;
+
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.ItemStack;
 
 public class NmsManager implements INmsManager {
 	public boolean damageItem(org.bukkit.inventory.ItemStack item, int damage, Player player) {

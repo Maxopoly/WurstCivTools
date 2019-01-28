@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.maxopoly.WurstCivTools.enchantment.CustomEnchantment;
 
-public class Util {
+public class EnchantUtil {
 
 	private static final Set<Material> swords = new HashSet<>(Arrays.asList(new Material[] { Material.DIAMOND_SWORD,
 			Material.IRON_SWORD, Material.GOLD_SWORD, Material.STONE_SWORD, Material.WOOD_SWORD }));
@@ -167,14 +167,7 @@ public class Util {
 	}
 
 	public static boolean chance(int attempts, int bound) {
-		if (attempts >= bound) {
-			return true;
-		}
-		Random rand = new Random();
-		if (rand.nextInt(bound) <= attempts - 1) {
-			return true;
-		} else
-			return false;
+		return new Random().nextInt(bound) <= (attempts - 1);
 	}
 
 	public static String getRomanNumeral(int i) {
@@ -238,7 +231,7 @@ public class Util {
 	public static void printMap(Map<CustomEnchantment, Integer> map) {
 		Bukkit.getLogger().info("CustomEnchantment map contains: ");
 		for (CustomEnchantment e : map.keySet()) {
-			Bukkit.getLogger().info(e.getName() + ": " + map.get(e));
+			Bukkit.getLogger().info(e.getNiceName() + ": " + map.get(e));
 		}
 	}
 }
